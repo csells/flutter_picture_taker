@@ -1,0 +1,17 @@
+name: flutter_picture_taker
+description: "A simple Flutter package for capturing still pictures using the camera plugin targeting iOS, Android, and the web."
+version: 0.1.0
+homepage:
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  camera: ^0.11.0+2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  all_lint_rules_community: ^0.0.43
+  flutter_test:
+    sdk: flutter
