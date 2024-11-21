@@ -17,7 +17,11 @@ import 'camera_button.dart';
 Future<XFile?> showStillCameraDialog(BuildContext context) =>
     AdaptiveDialog.show<XFile>(
       context: context,
-      content: const StillCameraDialog(),
+      barrierDismissible: true,
+      content: const Padding(
+        padding: EdgeInsets.all(16),
+        child: StillCameraDialog(),
+      ),
     );
 
 /// A dialog widget for capturing still pictures using the camera.
