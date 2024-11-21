@@ -18,11 +18,9 @@ class CameraButton extends StatelessWidget {
     this.onPressed,
   });
 
-  /// A transparent color used for the outer circle.
   static const _transparent = Color(0x00000000);
-
-  /// A white color used for the inner circle.
   static const _white = Color(0xFFFFFFFF);
+  static const _black = Color(0xFF000000);
 
   /// The callback that is called when the button is tapped.
   ///
@@ -35,7 +33,7 @@ class CameraButton extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: _transparent,
+            color: _black,
           ),
           child: Container(
             width: 50,

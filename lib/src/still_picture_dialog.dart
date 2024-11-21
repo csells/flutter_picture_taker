@@ -14,7 +14,7 @@ import 'camera_button.dart';
 /// image, or `null` if no image was captured.
 ///
 /// The [context] parameter is used to look up the [Navigator] for the dialog.
-Future<XFile?> showStillCameraDialog(BuildContext context) async =>
+Future<XFile?> showStillCameraDialog(BuildContext context) =>
     AdaptiveDialog.show<XFile>(
       context: context,
       content: const StillCameraDialog(),
@@ -40,27 +40,28 @@ class StillCameraDialog extends StatefulWidget {
 }
 
 class _StillCameraDialogState extends State<StillCameraDialog> {
-  late CameraController _controller;
+  CameraController? _controller;
   late final Future<void> _cameraFuture = _initCamera();
 
   Future<void> _initCamera() async {
     // pick the first camera
     final cameras = await availableCameras();
-    final camera = cameras.first;
+    if (cameras.isEmpty) throw Exception('No cameras found');
 
     // to display the camera output, create and initialize a controller
+    final camera = cameras.first;
     _controller = CameraController(
       camera,
       ResolutionPreset.medium,
       enableAudio: false,
     );
 
-    return _controller.initialize();
+    return _controller!.initialize();
   }
 
   @override
   void dispose() {
-    unawaited(_controller.dispose());
+    unawaited(_controller?.dispose());
     super.dispose();
   }
 
@@ -70,10 +71,25 @@ class _StillCameraDialogState extends State<StillCameraDialog> {
         builder: (context, snapshot) => Center(
           child: switch (snapshot.connectionState) {
             ConnectionState.done => snapshot.hasError
-                ? Text('Error: ${snapshot.error}')
+                ? GestureDetector(
+                    onTap: () => Navigator.pop(context, null),
+                    child: Container(
+                      color: const Color(0x00000000),
+                      alignment: Alignment.center,
+                      child: Text(
+                        snapshot.error.toString(),
+                        style: const TextStyle(
+                          color: Color(0xffffffff),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ),
+                  )
                 : Stack(
                     children: [
-                      CameraPreview(_controller),
+                      CameraPreview(_controller!),
                       Positioned(
                         bottom: 16,
                         left: 0,
@@ -89,7 +105,7 @@ class _StillCameraDialogState extends State<StillCameraDialog> {
 
   Future<void> _click() async {
     try {
-      final image = await _controller.takePicture();
+      final image = await _controller!.takePicture();
 
       // I checked it... what more can I do??
       // ignore: use_build_context_synchronously
