@@ -20,7 +20,6 @@ class CameraButton extends StatelessWidget {
 
   static const _transparent = Color(0x00000000);
   static const _white = Color(0xFFFFFFFF);
-  static const _black = Color(0xFF000000);
 
   /// The callback that is called when the button is tapped.
   ///
@@ -33,14 +32,18 @@ class CameraButton extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: _black,
+            color: _transparent,
           ),
           child: Container(
             width: 50,
             height: 50,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _transparent,
+              border: Border.all(
+                color: _white,
+                width: 2,
+              ),
             ),
             child: Center(
               child: Container(
