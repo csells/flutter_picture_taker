@@ -2,27 +2,56 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mime/mime.dart';
 
 import 'adaptive_dialog.dart';
 import 'adaptive_progress_indicator.dart';
 import 'camera_button.dart';
 
-/// Displays a dialog for capturing still pictures using the camera.
+/// Displays a dialog for capturing a still picture using the camera.
 ///
-/// This function shows a dialog that contains a custom camera interface
-/// for taking pictures. It returns an [XFile] containing the captured
-/// image, or `null` if no image was captured.
+/// This function shows an [AdaptiveDialog] containing a [StillCameraDialog]
+/// widget, allowing the user to take a picture. The dialog can be dismissed
+/// by clicking outside of it or pressing the Esc key on systems that have one.
 ///
-/// The [context] parameter is used to look up the [Navigator] for the dialog.
-Future<XFile?> showStillCameraDialog(BuildContext context) =>
-    AdaptiveDialog.show<XFile>(
-      context: context,
-      barrierDismissible: true,
-      content: const Padding(
-        padding: EdgeInsets.all(16),
-        child: StillCameraDialog(),
-      ),
-    );
+/// The function returns an [XFile] containing the captured image, or `null`
+/// if the dialog was dismissed without taking a picture.
+///
+/// The mime type of the captured image is determined by reading the first
+/// few bytes of the file and using the [lookupMimeType] function.
+///
+/// Example usage:
+/// ```dart
+/// Future<void> _takePicture() async {
+///   final image = await showStillCameraDialog(context);
+///   if (image != null) setState(() => _image = image);
+/// }
+/// ```
+///
+/// [context] - The build context to use for displaying the dialog.
+Future<XFile?> showStillCameraDialog(BuildContext context) async {
+  final image = await AdaptiveDialog.show<XFile>(
+    context: context,
+    barrierDismissible: true,
+    content: const Padding(
+      padding: EdgeInsets.all(16),
+      child: StillCameraDialog(),
+    ),
+  );
+
+  // if mime type is available from the XFile, return it immediately
+  if (image == null || image.mimeType != null) return image;
+
+  // look up the mime type
+  final bytes = await image.readAsBytes();
+  final mime = lookupMimeType(image.path, headerBytes: bytes.take(8).toList());
+  return XFile.fromData(
+    bytes,
+    mimeType: mime,
+    name: image.name,
+    path: image.path,
+  );
+}
 
 /// A dialog widget for capturing still pictures using the camera.
 ///

@@ -29,7 +29,11 @@ class _HomePageState extends State<HomePage> {
                 child: const Text('Take picture'),
               ),
               const Gap(8),
-              Text(_image?.path ?? 'No image'),
+              Text(_image?.name ?? 'No name'),
+              const Gap(8),
+              Text(_image?.path ?? 'No path'),
+              const Gap(8),
+              Text(_image?.mimeType ?? 'No mime type'),
               const Gap(8),
               if (_image != null)
                 kIsWeb
