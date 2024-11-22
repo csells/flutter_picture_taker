@@ -21,9 +21,13 @@ Future<void> _takePicture() async {
 
 The [sample app](https://github.com/csells/flutter_picture_taker/blob/main/example/lib/main.dart) provides a simple way to take a picture and see the resulting image:
 
-TODO:screenshot1
+![](https://raw.githubusercontent.com/csells/flutter_picture_taker/refs/heads/main/README/screenshot01.png)
 
-The dialog chooses the first camera reported available by the system and lets the user press the button to take a picture or click anywhere else (or press the Esc key on systems that have one) to dismiss the dialog without taking a picture. The picture is available as an `XFile` from [the cross_file package](https://pub.dev/packages/cross_file) and can be shown like so:
+The dialog chooses the first camera reported available by the system and lets the user press the button to take a picture or click anywhere else (or press the Esc key on systems that have one) to dismiss the dialog without taking a picture:
+
+![](https://raw.githubusercontent.com/csells/flutter_picture_taker/refs/heads/main/README/screenshot02.png)
+
+The picture is available as an `XFile` from [the cross_file package](https://pub.dev/packages/cross_file) and can be shown like so:
 
 ```dart
   kIsWeb ? Image.network(_image!.path) : Image.file(File(_image!.path))
