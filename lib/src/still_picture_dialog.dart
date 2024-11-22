@@ -75,33 +75,8 @@ class _StillCameraDialogState extends State<StillCameraDialog> {
         builder: (context, snapshot) => Center(
           child: switch (snapshot.connectionState) {
             ConnectionState.done => snapshot.hasError
-                ? GestureDetector(
-                    onTap: () => Navigator.pop(context, null),
-                    child: Container(
-                      color: const Color(0x00000000),
-                      alignment: Alignment.center,
-                      child: Text(
-                        snapshot.error.toString(),
-                        style: const TextStyle(
-                          color: Color(0xffffffff),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ),
-                  )
-                : Stack(
-                    children: [
-                      CameraPreview(_controller!),
-                      Positioned(
-                        bottom: 16,
-                        left: 0,
-                        right: 0,
-                        child: Center(child: CameraButton(onPressed: _click)),
-                      ),
-                    ],
-                  ),
+                ? _ErrorView(snapshot.error!)
+                : _CameraView(controller: _controller!, onPressed: _click),
             _ => const AdaptiveCircularProgressIndicator(),
           },
         ),
@@ -122,4 +97,48 @@ class _StillCameraDialogState extends State<StillCameraDialog> {
       if (context.mounted) Navigator.pop(context, null);
     }
   }
+}
+
+class _CameraView extends StatelessWidget {
+  const _CameraView({required this.controller, required this.onPressed});
+  final CameraController controller;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          CameraPreview(controller),
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: CameraButton(onPressed: onPressed),
+          ),
+        ],
+      );
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView(this.error);
+  final Object error;
+
+  static const _white = Color(0xffffffff);
+  static const _black = Color(0xff000000);
+
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+        color: _white,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            error.toString(),
+            style: const TextStyle(
+              color: _black,
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              decoration: TextDecoration.none,
+            ),
+          ),
+        ),
+      );
 }
